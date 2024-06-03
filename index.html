@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>Three.js - Fundamentals 3 cubes</title>
+    <style>
+      #c {
+        width: 100%;
+        height: 100%;
+        display: block;
+        /* background: url(./sky.jpg) no-repeat center center; */
+        /* background-size: cover; */
+      }
+      .center {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <h3>Anthony Duong</h3>
+      <h3>ankaduon@ucsc.edu</h3>
+      <h3>
+        Note to Grader:
+        <br />
+        LightSources: Directional, Ambient, and Spotlight.
+        <br />
+        The spotlight is used for my ufo ray.Additional I used the primary
+        shapes as a means to make the ufo and houses.
+        <br />
+        The sphere on the top left is supposed to be the moon.
+      </h3>
+    </div>
+    <div class="center">
+      <canvas id="c"></canvas>
+    </div>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://threejs.org/build/three.module.js",
+          "three/addons/": "https://threejs.org/examples/jsm/"
+        }
+      }
+    </script>
+  </body>
+
+  <script src="colorGUIHelperClass.js"></script>
+  <script src="minMaxGUIHelperClass.js"></script>
+  <script src="degRadHelper.js"></script>
+  <script type="module" src="farmer.js"></script>
+  <script type="module" src="ufo.js"></script>
+  <script type="module" src="index.js"></script>
+</html>
