@@ -7,6 +7,9 @@ export class UFO {
     this.setPosition(x, y, z);
     scene.add(this.ufo);
   }
+  degreesToRadians(degrees) {
+    return degrees * (Math.PI / 180);
+  }
 
   createUFO() {
     // Main body (dome)
@@ -78,7 +81,24 @@ export class UFO {
   }
 
   // Optional: Add animation for the UFO
-  animate() {
-    this.ufo.rotation.y += 0.01;
+  animate(speed) {
+    if (!speed) {
+      speed = 0.01;
+    }
+    this.ufo.rotation.y = this.ufo.rotation.y + 0.01 + 0.01 * speed;
+  }
+  scale(x, y, z) {
+    this.ufo.scale.set(x, y, z);
+  }
+  rotateX(degrees) {
+    this.ufo.rotation.x = this.degreesToRadians(degrees);
+  }
+
+  rotateY(degrees) {
+    this.ufo.rotation.y = this.degreesToRadians(degrees);
+  }
+
+  rotateZ(degrees) {
+    this.ufo.rotation.z = this.degreesToRadians(degrees);
   }
 }

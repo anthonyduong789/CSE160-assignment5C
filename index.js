@@ -7,16 +7,81 @@ import { Farmer } from "./farmer.js";
 import { UFO } from "./ufo.js";
 import { House } from "./house.js";
 
-let ufoXposition = 8;
-let ufoYposition = 10;
-let ufoZposition = 0;
-
 function makeXYZGUI(gui, vector3, name, onChangeFn) {
   const folder = gui.addFolder(name);
   folder.add(vector3, "x", -10, 10).onChange(onChangeFn);
   folder.add(vector3, "y", 0, 10).onChange(onChangeFn);
   folder.add(vector3, "z", -10, 10).onChange(onChangeFn);
   // folder.open();
+}
+class Tractor {
+  constructor(scene) {
+    this.scene = scene;
+    this.tractor = new THREE.Group();
+
+    // Tractor body
+    const bodyGeometry = new THREE.BoxGeometry(6, 2, 3);
+    const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x004000 });
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    body.position.y = 2.5;
+    this.tractor.add(body);
+
+    // Tractor cabin
+    const cabinGeometry = new THREE.BoxGeometry(3, 2, 2.5);
+    const cabinMaterial = new THREE.MeshBasicMaterial({ color: 0x004000 });
+    const cabin = new THREE.Mesh(cabinGeometry, cabinMaterial);
+    cabin.position.set(-1.5, 3.9, 0);
+    this.tractor.add(cabin);
+
+    // Wheels
+    const BackWheelsGeometry = new THREE.CylinderGeometry(1.75, 1.75, 0.7, 32);
+    const wheelMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+    const BackWheelsPositions = [
+      { x: -2.5, z: 1.8 },
+      { x: -2.5, z: -1.8 },
+      // { x: 2.5, z: 1.8 },
+      // { x: 2.5, z: -1.8 },
+    ];
+
+    BackWheelsPositions.forEach((pos) => {
+      const wheel = new THREE.Mesh(BackWheelsGeometry, wheelMaterial);
+      wheel.rotation.z = Math.PI / 2;
+      wheel.rotation.y = Math.PI / 2;
+      wheel.position.set(pos.x, 1.2, pos.z);
+      this.tractor.add(wheel);
+    });
+
+    const FrontWheelsGeometry = new THREE.CylinderGeometry(1.5, 1.5, 0.7, 32);
+    const FrontWheelsPositions = [
+      // { x: -2.5, z: 1.8 },
+      // { x: -2.5, z: -1.8 },
+      { x: 2.5, z: 1.8 },
+      { x: 2.5, z: -1.8 },
+    ];
+    FrontWheelsPositions.forEach((pos) => {
+      const wheel = new THREE.Mesh(FrontWheelsGeometry, wheelMaterial);
+      wheel.rotation.z = Math.PI / 2;
+      wheel.rotation.y = Math.PI / 2;
+      wheel.position.set(pos.x, 0.9, pos.z);
+      this.tractor.add(wheel);
+    });
+
+    // Add tractor to scene
+    this.scene.add(this.tractor);
+  }
+
+  setPosition(x, y, z) {
+    this.tractor.position.set(x, y, z);
+  }
+
+  setRotation(x, y, z) {
+    this.tractor.rotation.set(x, y, z);
+  }
+
+  setScale(x, y, z) {
+    this.tractor.scale.set(x, y, z);
+  }
 }
 
 class DegRadHelper {
@@ -34,20 +99,20 @@ class DegRadHelper {
 
 function keyDown(ev) {
   if (ev.keyCode == 39 || ev.keyCode == 68) {
-    ufoZposition -= 0.5;
+    ufoZposition -= 0.2;
     // A
   } else if (ev.keyCode == 37 || ev.keyCode == 65) {
-    ufoZposition += 0.5;
+    ufoZposition += 0.2;
     // W
   } else if (ev.keyCode == 38 || ev.keyCode == 87) {
-    ufoXposition -= 0.5;
+    ufoXposition -= 0.2;
     // S
   } else if (ev.keyCode == 40 || ev.keyCode == 83) {
-    ufoXposition += 0.5;
+    ufoXposition += 0.2;
   } else if (ev.keyCode == 32) {
-    ufoYposition += 0.5;
+    ufoYposition += 0.2;
   } else if (ev.keyCode == 16) {
-    ufoYposition -= 0.5;
+    ufoYposition -= 0.2;
   }
 }
 
@@ -66,7 +131,7 @@ function main() {
   const near = 0.1;
   const far = 200;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.set(90, 20, -19);
+  camera.position.set(140, 20, -19);
 
   const scene = new THREE.Scene();
 
@@ -101,7 +166,27 @@ function main() {
     });
   }
 
+  const Tractor_object = new Tractor(scene);
+  Tractor_object.setPosition(15, 1, -5);
+  Tractor_object.setRotation(0, -0.3, 0);
+  let ufoXposition = 8;
+  let ufoYposition = 12;
+  let ufoZposition = 0;
   const UFO_object = new UFO(scene, ufoXposition, ufoYposition, ufoZposition);
+  // UFO_object.scale(2, 2, 2);
+  let MotherShipX = -16;
+  let MotherShipY = 23;
+  let MotherShipZ = -9;
+  const MotherShip = new UFO(scene, MotherShipX, MotherShipY, MotherShipZ);
+  const MotherShip1 = new UFO(scene, MotherShipX, MotherShipY, MotherShipZ);
+  MotherShip.scale(2, 1.2, 2);
+  MotherShip.rotateX(5);
+  MotherShip.rotateY(5);
+  // MotherShip.rotateZ(3);
+  MotherShip1.scale(2, 1.2, 2);
+  MotherShip1.rotateX(5);
+  MotherShip1.rotateY(5);
+  // MotherShip1.rotateZ(-3);
   const House_object = new House(scene);
   House_object.setPosition(4, 3, 9);
   House_object.setScale(6);
@@ -337,8 +422,9 @@ function main() {
       // // NOTE: adjust first parameter to zoom in and out
       // frameArea(boxSize * 3, boxSize, boxCenter, camera);
 
-      obj.position.set(5, 0, -8);
-      obj.rotation.y = THREE.MathUtils.degToRad(-20);
+      obj.position.set(5, 0, -15);
+      obj.scale.set(1.5, 1.5, 1.5);
+      obj.rotation.y = THREE.MathUtils.degToRad(-24);
       scene.add(obj);
 
       // compute the box that contains all the stuff
@@ -406,10 +492,11 @@ function main() {
       sphereWidthDivisions,
       sphereHeightDivisions,
     );
-    const sphereMat = new THREE.MeshPhongMaterial({ color: "#918483" });
+    const sphereMat = new THREE.MeshPhongMaterial({ color: "#EEEEEE" });
     const moonMesh = new THREE.Mesh(sphereGeo, sphereMat);
 
-    moonMesh.position.set(13, 15, 15);
+    moonMesh.position.set(-10, 19, 15);
+    moonMesh.scale.set(2.2, 2, 2.2);
     scene.add(moonMesh);
   }
   const otherShapes = [
@@ -442,6 +529,12 @@ function main() {
 
     requestAnimationFrame(render);
     UFO_object.setPosition(ufoXposition, ufoYposition, ufoZposition);
+    MotherShip.setPosition(MotherShipX, MotherShipY, MotherShipZ);
+    MotherShip1.setPosition(MotherShipX, MotherShipY, MotherShipZ);
+    // MotherShip.setPosition(ufoXposition - 6, ufoYposition + 8, ufoZposition);
+    // MotherShip1.setPosition(ufoXposition - 6, ufoYposition + 8, ufoZposition);
+    MotherShip.animate(10);
+    // MotherShip1.animate(3);
     UFO_object.animate();
     FarmerObj.animate();
   }
